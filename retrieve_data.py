@@ -13,7 +13,7 @@ import urllib.request as ureq
 url = 'http://10.3.78.241/twidata.txt'
 
 ### location to save the data
-sdir = '/archive/campus_mesonet_data'
+sdir = '/archive/campus_mesonet_data/mesonet_data/met_tower'
 
 # Pull the data and process it
 data = list(ureq.urlopen(url))[-1].decode('utf-8') # Retrieve text file and grab last line only
@@ -52,7 +52,7 @@ except Exception as err: # Must be a new file
     fnout = open(f"{sdir}/{year}/ValpoMetTower_{date.strftime('%Y%m%d')}.csv", 'a+')
 
     # Write header then data
-    fnout.write('Date (YYYY-MM-DD_HH:MM:SS local),Time (hours),Temp (C),RH (%),Pres (mb),Rain (mm),Wspd (m/s),Wdir (deg),SWdown (W/m2)')
+    fnout.write('Date (YYYY-MM-DD_HH:MM:SS local),Temp (C),RH (%),Pres (mb),Rain (mm),Wspd (m/s),Wdir (deg),SWdown (W/m2)')
     fnout.write(f'\n{date.strftime("%Y-%m-%d_%H:%M:%S")},{temp:.2f},{rh:.2f},{pres:.2f},{rain:.2f},{wspd:.2f},{wdir:.2f},{sdown:.2f}')
 
 # Close the file
