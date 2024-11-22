@@ -10,7 +10,7 @@ import os
 import urllib.request as ureq
 
 ### The tower file url
-url = 'http://10.3.78.241/twidata.txt'
+url = 'http://10.3.78.240/twidata.txt'
 
 ### location to save the data
 sdir = '/archive/campus_mesonet_data/mesonet_data/met_tower'
