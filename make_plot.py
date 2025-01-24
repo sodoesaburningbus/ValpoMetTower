@@ -70,9 +70,16 @@ date = datetime.now(timezone)
 # Read the data
 data = pandas.read_csv(f'{data_dir}/{date.year}/ValpoMetTower_{date.strftime("%Y%m%d")}.csv')
 
+# Check if day light savings time
+# Logic set this way beause the tower is naturally in DST
+if (date > datetime(date.year, 3, 9, tzinfo=timezone)) and (date < datetime(date.year, 11, 2, tzinfo=timezone)):
+    dst_value = 0
+else:
+    dst_value = -1
+
 # Convert dates into times
 dates = [datetime.strptime(date, "%Y-%m-%d_%H:%M:%S") for date in data["Date (YYYY-MM-DD_HH:MM:SS local)"].values]
-times = np.array([(date-dates[0]).total_seconds() for date in dates], dtype='float')+(dates[0].hour*3600.0+dates[0].minute*60.0+dates[0].second)
+times = np.array([(date-dates[0]).total_seconds() for date in dates], dtype='float')+(dates[0].hour*3600.0+dates[0].minute*60.0+dates[0].second)+dst_value*3600.0
 
 # Extract the data from the dataframe and interpolate it to one minutely intervals
 itemp = np.interp(np.arange(0, 86400.0+60.0, 60), times, data['Temp (C)'], left=np.nan, right=np.nan)
