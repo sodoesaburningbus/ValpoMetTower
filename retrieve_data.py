@@ -7,19 +7,28 @@
 ### Import libraries
 from datetime import datetime
 import os
+import time
 import urllib.request as ureq
 
 ### The tower file url
-url = 'http://10.3.78.240/twidata.txt'
+url = 'http://10.3.78.245/twidata.txt'
 
 ### location to save the data
 sdir = '/archive/campus_mesonet_data/mesonet_data/met_tower'
 
 # Pull the data and process it
-data = list(ureq.urlopen(url))[-1].decode('utf-8') # Retrieve text file and grab last line only
+data = list(ureq.urlopen(url))
+data = list([dat.decode('utf-8') for dat in data]) # Retrieve text file
 
+# Locate data line in test data
+for line in data:
+    try:
+        date = datetime.strptime(line[:17], "%y/%m/%d %H:%M:%S") # Local
+        break
+    except:
+        pass
+data = line
 
-date = datetime.strptime(data[:17], "%y/%m/%d %H:%M:%S") # Local
 wdir = float(data[18:21]) # deg
 wspd = float(data[22:27])*0.447 # m/s
 sdown = float(data[32:36]) # W/m2
