@@ -27,8 +27,8 @@ date1 = datetime.now(timezone)
 date2 = date1-timedelta(days=1)
 
 # Read the data
-data1 = pandas.read_csv(f'{data_dir}/{date1.year}/ValpoMetTower_{date1.strftime("%Y%m%d")}.csv')
-data2 = pandas.read_csv(f'{data_dir}/{date2.year}/ValpoMetTower_{date2.strftime("%Y%m%d")}.csv')
+data1 = pandas.read_csv(f'{data_dir}/{date1.year}/rapid_ValpoMetTower_{date1.strftime("%Y%m%d")}.csv')
+data2 = pandas.read_csv(f'{data_dir}/{date2.year}/rapid_ValpoMetTower_{date2.strftime("%Y%m%d")}.csv')
 
 # Find the extremes
 Tmax1 = np.nanmax(data1['Temp (C)'])*1.8+32.0
@@ -59,15 +59,15 @@ for line in fn_in:
 
     if ("High Temperature" in line):
         if first:
-            newline = f"          <p>High Temperature: {Tmax1:.1f} °F<br>Low Temperature: {Tmin1:.1f} °F<br>Wind Gust: {Wind1:.1f} mph<br>Rainfall {rain1:.2f} inches</p>\n"
+            newline = f"          <p>High Temperature: {Tmax1:.1f} °F<br>Low Temperature: {Tmin1:.1f} °F<br>Wind Gust: {Wind1:.1f} mph<br>Rainfall: {rain1:.2f} inches</p>\n"
             fn_out.write(newline)
             first = False
         else:
-            newline = f"          <p>High Temperature: {Tmax2:.1f} °F<br>Low Temperature: {Tmin2:.1f} °F<br>Wind Gust: {Wind2:.1f} mph<br>Rainfall {rain2:.2f} inches</p>\n"
+            newline = f"          <p>High Temperature: {Tmax2:.1f} °F<br>Low Temperature: {Tmin2:.1f} °F<br>Wind Gust: {Wind2:.1f} mph<br>Rainfall: {rain2:.2f} inches</p>\n"
             fn_out.write(newline)
 
     elif ("Insolation" in line):
-        newline = f"          <p>Temperature: {T0:.1f} °F<br>Rel. Humidity: {RH0:.0f}%<br>Wind Speed: {Wspd0:.1f} mph<br>Wind Direction {Wdir0:.0f}°<br>Pressure: {P0:.1f} mb<br>Rainfall {rain1:.2f} inches<br>Insolation: {sw0:.1f} W m<sup>-2</sup></p>\n"
+        newline = f"          <p>Temperature: {T0:.1f} °F<br>Rel. Humidity: {RH0:.0f}%<br>Wind Speed: {Wspd0:.1f} mph<br>Wind Direction: {Wdir0:.0f}°<br>Pressure: {P0:.1f} mb<br>Rainfall: {rain1:.2f} inches<br>Insolation: {sw0:.1f} W m<sup>-2</sup></p>\n"
         fn_out.write(newline)
 
     else:

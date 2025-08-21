@@ -78,7 +78,7 @@ else:
     dst_value = -1
 
 # Convert dates into times
-dates = [datetime.strptime(date, "%Y-%m-%d_%H:%M:%S") for date in data["Date (YYYY-MM-DD_HH:MM:SS local)"].values]
+dates = [datetime.strptime(date, "%Y-%m-%d_%H:%M:%S") for date in data["Tower Date (local)"].values]
 times = np.array([(date-dates[0]).total_seconds() for date in dates], dtype='float')+(dates[0].hour*3600.0+dates[0].minute*60.0+dates[0].second)+dst_value*3600.0
 
 # Extract the data from the dataframe and interpolate it to one secondly intervals
