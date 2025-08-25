@@ -15,7 +15,7 @@ sdir = '/archive/campus_mesonet_data/images'
 lat0 = 41.46
 
 # Number of points to use in window averaging (each point is 1 second)
-npts = 300
+npts = 120
 
 # Font options for the plots
 fs = 18

@@ -28,10 +28,11 @@ while True:
     wdir = float(root[4].text) # deg
     wspd = float(root[5].text)*0.447 # m/s
     sdown = float(root[6].text) # W/m2
-    temp = (float(root[8].text)-32.0)/1.8 # 'C
+    temp = (float(root[10].text)-32.0)/1.8 # 'C
     rh = float(root[11].text) # %
     pres = float(root[12].text)*33.86 # hPa
     rain = float(root[16].text)*25.4 # mm
+    day_rain = float(root[14].text)*25.4 # mm
     date = datetime.strptime(root[2].text+root[1].text, "%m/%d/%y%H:%M:%S")
 
     # Try to create an annual folder to store the data in
@@ -50,7 +51,7 @@ while True:
         if (datetime.strptime(list(fnout)[-1].split(',')[0], "%Y-%m-%d_%H:%M:%S") == date):
             pass
         else:
-            fnout.write(f'\n{server_time.strftime("%Y-%m-%d_%H:%M:%S")},{date.strftime("%Y-%m-%d_%H:%M:%S")},{temp:.2f},{rh:.2f},{pres:.2f},{rain:.2f},{wspd:.2f},{wdir:.2f},{sdown:.2f}')
+            fnout.write(f'\n{server_time.strftime("%Y-%m-%d_%H:%M:%S")},{date.strftime("%Y-%m-%d_%H:%M:%S")},{temp:.2f},{rh:.2f},{pres:.2f},{rain:.2f},{day_rain:.2f},{wspd:.2f},{wdir:.2f},{sdown:.2f}')
 
     except Exception as err: # Must be a new file
         print('WARNING', err)
@@ -58,8 +59,8 @@ while True:
         fnout = open(f"{sdir}/{year}/rapid_ValpoMetTower_{date.strftime('%Y%m%d')}.csv", 'a+')
 
         # Write header then data
-        fnout.write('Server Date (UTC),Tower Date (local),Temp (C),RH (%),Pres (mb),Rain (mm),Wspd (m/s),Wdir (deg),SWdown (W/m2)')
-        fnout.write(f'\n{server_time.strftime("%Y-%m-%d_%H:%M:%S")},{date.strftime("%Y-%m-%d_%H:%M:%S")},{temp:.2f},{rh:.2f},{pres:.2f},{rain:.2f},{wspd:.2f},{wdir:.2f},{sdown:.2f}')
+        fnout.write('Server Date (UTC),Tower Date (local),Temp (C),RH (%),Pres (mb),Rain (mm),Daily Total Rain (mm),Wspd (m/s),Wdir (deg),SWdown (W/m2)')
+        fnout.write(f'\n{server_time.strftime("%Y-%m-%d_%H:%M:%S")},{date.strftime("%Y-%m-%d_%H:%M:%S")},{temp:.2f},{rh:.2f},{pres:.2f},{rain:.2f},{day_rain:.2f},{wspd:.2f},{wdir:.2f},{sdown:.2f}')
 
     # Close the file
     fnout.close()
