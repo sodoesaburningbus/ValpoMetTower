@@ -91,9 +91,14 @@ iwdir = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['Wdir (deg)'], left=
 isw = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['SWdown (W/m2)'], left=np.nan, right=np.nan)
 itimes = np.arange(0, 86400.0+1.0, 1)
 
+# Compute the dewpoint
+e = 611.2*np.exp(17.67*itemp/(itemp+243.5))*irh/100.0
+Td = -243.5*np.log(e/611.2)/(np.log(e/611.2)-17.67)
+TdF = (Td*1.8)+32.0
 
 # Do the window averaging for the other variables
 wtemp = window_ave(itemp)
+wdewp = window_ave(TdF)
 wrh = window_ave(irh)
 wpres = window_ave(ipres)
 wwspd = window_ave(iwspd)
@@ -107,13 +112,14 @@ fig, axes = pp.subplots(nrows=4, figsize=(12,14), dpi=600, constrained_layout=Tr
 # Temperature
 wtempF = (wtemp*1.8)+32.0
 axes[0].plot(wtimes, wtempF, color='firebrick', label='T')
+axes[0].plot(wtimes, wdewp, color='forestgreen', label='Td')
 axes[0].plot([0,0],[-100,-100], color='steelblue', label='RH') # Ghost line for RH
 
-axes[0].set_ylim(np.floor(np.nanmin(wtempF)*0.95), np.ceil(np.nanmax(wtempF)*1.05))
+axes[0].set_ylim(np.floor(np.nanmin(wdewp)*0.95), np.ceil(np.nanmax(wtempF)*1.05))
 axes[0].legend(shadow=True, fontsize=14)
 axes[0].set_ylabel('Temperature (°F)', fontsize=fs, fontweight=fw)
 
-axes[0].set_title(f'Current Campus Observations - {date.strftime("%b %d, %Y")}', fontsize=fs, fontweight=fw)
+axes[0].set_title(f'Current Campus Observations - {date.strftime("%b %d, %Y")}\nTwo-minute Average', fontsize=fs, fontweight=fw)
 
 # Relative humidity
 axrh = axes[0].twinx()
@@ -149,6 +155,7 @@ axes[2].legend(shadow=True, fontsize=14)
 # Rainfall
 axrain = axes[2].twinx()
 axrain.plot(itimes[np.isfinite(irain)], irain[np.isfinite(irain)], color='steelblue')
+axrain.fill_between(itimes[np.isfinite(irain)], irain[np.isfinite(irain)], color='steelblue')
 
 axrain.set_ylabel('Rainfall (inches)', fontsize=fs, fontweight=fw)
 axrain.set_ylim(0, max(1,np.max(irain)+1))
@@ -161,7 +168,7 @@ axes[3].fill_between(itimes, 0, 1, where=ideal_sun<5, color='gray', alpha=0.20, 
 
 axes[3].set_ylim(0, np.ceil(np.nanmax(ideal_sun)*1.05))
 axes[3].set_ylabel('Solar Insolation (W m$^{-2}$)', fontsize=fs, fontweight=fw)
-axes[3].set_xlabel('Hour from Local Midnight', fontsize=fs, fontweight=fw)
+axes[3].set_xlabel('Time (Local)', fontsize=fs, fontweight=fw)
 
 # Atmospheric transmission
 iwsw = np.interp(itimes, wtimes, wsw)
@@ -179,8 +186,8 @@ axes[3].legend(shadow=True, fontsize=14)
 for ax in axes:
     ax.grid()
     ax.set_xlim(0,86400)
-    ax.set_xticks(np.arange(0, 97200, 10800))
-    ax.set_xticklabels(np.arange(0, 27, 3, dtype=int), fontsize=12)
+    ax.set_xticks(np.arange(0, 93600, 7200))
+    ax.set_xticklabels(np.arange(0, 26, 2, dtype=int)%24, fontsize=12)
     ax.tick_params(axis='y', labelsize=14)
 axrain.tick_params(axis='y', labelsize=14)
 axdir.tick_params(axis='y', labelsize=14)

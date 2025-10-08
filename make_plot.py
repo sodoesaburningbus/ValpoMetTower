@@ -127,7 +127,7 @@ axes[1].plot(wtimes, wwspd*2.237, color='black', label='Speed')
 axes[1].plot([0,0],[-10,-10], color='goldenrod', linestyle=':', label='Direction') # Ghost line for legend
 
 axes[1].set_ylim(0, np.ceil(np.nanmax(wwspd*2.237)*1.05))
-axes[1].set_ylabel('Wind Speed (m s$^{-1}$)',  fontsize=fs, fontweight=fw)
+axes[1].set_ylabel('Wind Speed (mph)',  fontsize=fs, fontweight=fw)
 axes[1].legend(shadow=True, fontsize=14)
 
 # Wind Direction
@@ -161,7 +161,7 @@ axes[3].fill_between(itimes, 0, 1, where=ideal_sun<5, color='gray', alpha=0.20, 
 
 axes[3].set_ylim(0, np.ceil(np.nanmax(ideal_sun)*1.05))
 axes[3].set_ylabel('Solar Insolation (W m$^{-2}$)', fontsize=fs, fontweight=fw)
-axes[3].set_xlabel('Hour from Local Midnight', fontsize=fs, fontweight=fw)
+axes[3].set_xlabel('Time (local)', fontsize=fs, fontweight=fw)
 
 # Atmospheric transmission
 iwsw = np.interp(itimes, wtimes, wsw)
@@ -180,7 +180,7 @@ for ax in axes:
     ax.grid()
     ax.set_xlim(0,86400)
     ax.set_xticks(np.arange(0, 97200, 10800))
-    ax.set_xticklabels(np.arange(0, 27, 3, dtype=int), fontsize=12)
+    ax.set_xticklabels(np.arange(0, 26, 2, dtype=int)%24, fontsize=12)
     ax.tick_params(axis='y', labelsize=14)
 axrain.tick_params(axis='y', labelsize=14)
 axdir.tick_params(axis='y', labelsize=14)
