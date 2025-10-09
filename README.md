@@ -26,7 +26,9 @@ watchdog.py - Runs on cron to check if data files for the tower are being update
 
 
 ## Example Crontab for running the met tower
+```
 @reboot /archive/campus_mesonet_data/ValpoMetTower/run_tower_feed.sh start
 */10 * * * * /miniforge3/envs/main/bin/python /archive/campus_mesonet_data/ValpoMetTower/qc_rapid_data.py
 */15 * * * * /miniforge3/envs/main/bin/python /archive/campus_mesonet_data/ValpoMetTower/make_php.py >/dev/null 2>&1
 */15 * * * * /miniforge3/envs/main/bin/python /archive/campus_mesonet_data/ValpoMetTower/make_rapid_plot.py >/dev/null 2>&1
+```
