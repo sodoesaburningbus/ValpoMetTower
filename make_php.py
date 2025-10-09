@@ -11,7 +11,7 @@ template = '/var/www/html/current/index_template.php'
 spath = '/var/www/html/current/index.php'
 
 # Root directory containing data
-data_dir = '/archive/campus_mesonet_data/mesonet_data/met_tower'
+data_dir = '/archive/campus_mesonet_data/mesonet_data/met_tower/QCd_data'
 
 #####  END OPTIONS  #####
 
@@ -27,8 +27,8 @@ date1 = datetime.now(timezone)
 date2 = date1-timedelta(days=1)
 
 # Read the data
-data1 = pandas.read_csv(f'{data_dir}/{date1.year}/rapid_ValpoMetTower_{date1.strftime("%Y%m%d")}.csv')
-data2 = pandas.read_csv(f'{data_dir}/{date2.year}/rapid_ValpoMetTower_{date2.strftime("%Y%m%d")}.csv')
+data1 = pandas.read_csv(f'{data_dir}/{date1.year}/rapid_qc_ValpoMetTower_{date1.strftime("%Y%m%d")}.csv')
+data2 = pandas.read_csv(f'{data_dir}/{date2.year}/rapid_qc_ValpoMetTower_{date2.strftime("%Y%m%d")}.csv')
 
 # Find the extremes
 Tmax1 = np.nanmax(data1['Temp (C)'])*1.8+32.0

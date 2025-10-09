@@ -6,7 +6,7 @@
 ##### START OPTIONS #####
 
 # Root directory containing data
-data_dir = '/archive/campus_mesonet_data/mesonet_data/met_tower'
+data_dir = '/archive/campus_mesonet_data/mesonet_data/met_tower/QCd_data'
 
 # Directory to save the plots
 sdir = '/archive/campus_mesonet_data/images'
@@ -63,12 +63,11 @@ def solar_curve(day, wtimes):
     return solar_curve
 
 # Grab the current date (local time)
-#timezone = ZoneInfo('America/Central')
 timezone = pytz.timezone('US/Central')
 date = datetime.now(timezone)
 
 # Read the data
-data = pandas.read_csv(f'{data_dir}/{date.year}/rapid_ValpoMetTower_{date.strftime("%Y%m%d")}.csv')
+data = pandas.read_csv(f'{data_dir}/{date.year}/rapid_qc_ValpoMetTower_{date.strftime("%Y%m%d")}.csv')
 
 # Check if day light savings time
 # Logic set this way beause the tower is naturally in DST

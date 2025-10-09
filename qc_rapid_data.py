@@ -1,6 +1,5 @@
 ### This program applies basic quality checks to the
 ### secondly observations from the Valpo Met Tower.
-### Additionally, data are interpolated to a regular one-second interval.
 ### A standard deviation check is used to flag suspicious data and interpolate
 ### from the surrounding observations.
 ### Does not apply filter to rain due to rain often being a step function.
@@ -21,20 +20,22 @@ sdir = '/archive/campus_mesonet_data/mesonet_data/met_tower/QCd_data'
 
 # Number of observations to use in standard deviation check (1 s interval)
 # Even numbers only!
-nobs = 60
+nobs = 300
 
 # Number of standard deviations for the QC threshold
 # e.g. 3 means data more than 3 deviations from the mean over
 # the window will be thrown out
-nsigma = 3
+nsigma = 4
 
 #####  END OPTIONS  #####
 
 # Import required modules
+from collections import OrderedDict
 from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
 import pytz
+import os
 
 # Grab the current date (local time)
 #timezone = ZoneInfo('America/Central')
@@ -43,13 +44,6 @@ date = datetime.now(timezone)
 
 # Read the data
 data_df = pd.read_csv(f'{odir}/{date.year}/rapid_ValpoMetTower_{date.strftime("%Y%m%d")}.csv')
-
-# Check if day light savings time
-# Logic set this way beause the tower is naturally in DST
-if (date > datetime(date.year, 3, 9, tzinfo=timezone)) and (date < datetime(date.year, 11, 2, tzinfo=timezone)):
-    dst_value = 0
-else:
-    dst_value = -1
 
 # Convert dates into times
 dates = [datetime.strptime(date, "%Y-%m-%d_%H:%M:%S") for date in data_df["Tower Date (local)"].values]
@@ -86,7 +80,11 @@ for k in obs.keys():
         if (abs(obs[k][i]-mean)>nsigma*sigma):
             flags[k][i] = -1
 
-        # Apply some other baisc filters
+        # Check for -999
+            if (obs[k][i] == -999):
+                flags[k][i] = -1
+
+        # Apply some other basic filters
         if (k == 'temp') and (obs[k][i] > 100):
             flags[k][i] = -1
         elif (k == 'rh') and (obs[k][i] > 105):
@@ -102,31 +100,30 @@ for k in obs.keys():
     obs[k][flags[k] == -1] = np.nan
     obs[k][np.isnan(obs[k])] = np.interp(times[np.isnan(obs[k])], times[~np.isnan(obs[k])], obs[k][~np.isnan(obs[k])], left=np.nan, right=np.nan)
 
-    # Interpolate data to uniform one secondly intervals
-    iobs[k] = np.interp(np.arange(0, 86400.0+1.0, 1), times[~np.isnan(obs[k])], obs[k][~np.isnan(obs[k])], left=np.nan, right=np.nan)
-
-    # Extend QC flags to interpolated data and NaNs
-    flags[k] = np.interp(np.arange(0, 86400.0+1.0, 1), times[~np.isnan(obs[k])], obs[k][~np.isnan(obs[k])], left=-1, right=-1)
-    flags[k][flags[k] < 1] = -1
-    flags[k][flags[k] >= 1] = 1
-    flags[k][np.isnan(iobs[k])] == -1
-
-# Add interpolated times
-idates_local = np.array([dates[0]+timedelta(seconds=s) for s in np.arange(0, 86400.0+1.0, 1)])
-print(6+dst_value)
-idates_utc = np.arange([idate+timedelta(hours=6+dst_value) for idate in idates_local])
+    # Extend QC flags to any remaining NaNs
+    flags[k][np.isnan(obs[k])] == -1
 
 # Final dictionary for writing out
-out_dict = {
-    'Temp (C)': iobs['temp'], 'Temp QC': flags['temp'],
-    'RH (%)': iobs['rh'], 'RH QC': flags['rh'],
-    'Pres (mb)': iobs['pres'], 'Pres QC': flags['pres'],
-    'Rain (mm)': iobs['rain'], 'Rain QC': flags['rain'],
-    'Wspd (m/s)': iobs['wspd'], 'Wspd QC': flags['wspd'],
-    'Wdir (deg)': iobs['wdir'], 'Wdir QC': flags['wdir'],
-    'SWdown (W/m2)': iobs['swdown'], 'SWdown QC': flags['swdown']
-}
+out_dict = OrderedDict([
+    ('Server Date (UTC)', data_df['Server Date (UTC)'].values),
+    ('Tower Date (local)', data_df["Tower Date (local)"].values),
+    ('Temp (C)', obs['temp']), ('Temp QC', flags['temp']),
+    ('RH (%)', obs['rh']), ('RH QC', flags['rh']),
+    ('Pres (mb)', obs['pres']), ('Pres QC', flags['pres']),
+    ('Rain (mm)', obs['rain']), ('Rain QC', flags['rain']),
+    ('Wspd (m/s)', obs['wspd']), ('Wspd QC', flags['wspd']),
+    ('Wdir (deg)', obs['wdir']), ('Wdir QC', flags['wdir']),
+    ('SWdown (W/m2)', obs['swdown']), ('SWdown QC', flags['swdown'])
+])
+
+# Convert to dictionary and replace any empty strings with NaNs
+out_df = pd.DataFrame(out_dict)
+out_df = out_df.replace(r'^\s*$', np.nan, regex=True)
 
 # Write out the QC'd file
-out_df = pd.from_dict(out_dict)
-out_df.write_csv(f'{sdir}/{date.year}/rapid_qc_ValpoMetTower_{date.strftime("%Y%m%d")}.csv')
+try:
+    os.system(f'mkdir -p {sdir}/{date.year}')
+except:
+    pass
+
+out_df.to_csv(f'{sdir}/{date.year}/rapid_qc_ValpoMetTower_{date.strftime("%Y%m%d")}.csv', float_format='%.2f', index=False)
