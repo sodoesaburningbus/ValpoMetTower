@@ -59,7 +59,7 @@ while True:
         fnout = open(f"{sdir}/{year}/rapid_ValpoMetTower_{date.strftime('%Y%m%d')}.csv", 'a+')
 
         # Write header then data
-        fnout.write('Server Date (UTC),Tower Date (local),Temp (C),RH (%),Pres (mb),Rain (mm),Daily Total Rain (mm),Wspd (m/s),Wdir (deg),SWdown (W/m2)')
+        fnout.write('Server Date (UTC),Tower Date (local),Temp (C),RH (%),Pres (mb),Rain Rate (mm),Daily Total Rain (mm),Wspd (m/s),Wdir (deg),SWdown (W/m2)')
         fnout.write(f'\n{server_time.strftime("%Y-%m-%d_%H:%M:%S")},{date.strftime("%Y-%m-%d_%H:%M:%S")},{temp:.2f},{rh:.2f},{pres:.2f},{rain:.2f},{day_rain:.2f},{wspd:.2f},{wdir:.2f},{sdown:.2f}')
 
     # Close the file

@@ -27,26 +27,20 @@ date1 = datetime.now(timezone)
 date2 = date1-timedelta(days=1)
 
 # Read the data
-try:
-    data1 = pandas.read_csv(f'{data_dir}/QCd_data/{date1.year}/rapid_qc_ValpoMetTower_{date1.strftime("%Y%m%d")}.csv')
-except:
-    data1 = pandas.read_csv(f'{data_dir}/{date1.year}/rapid_ValpoMetTower_{date1.strftime("%Y%m%d")}.csv')
+data1 = pandas.read_csv(f'{data_dir}/{date1.year}/rapid_ValpoMetTower_{date1.strftime("%Y%m%d")}.csv')
 
-try:
-    data2 = pandas.read_csv(f'{data_dir}/QCd_data/{date2.year}/rapid_qc_ValpoMetTower_{date2.strftime("%Y%m%d")}.csv')
-except:
-    data2 = pandas.read_csv(f'{data_dir}/{date2.year}/rapid_ValpoMetTower_{date2.strftime("%Y%m%d")}.csv')
+data2 = pandas.read_csv(f'{data_dir}/QCd_data/{date2.year}/rapid_qc_ValpoMetTower_{date2.strftime("%Y%m%d")}.csv')
 
 # Find the extremes
 Tmax1 = np.nanmax(data1['Temp (C)'])*1.8+32.0
 Tmin1 = np.nanmin(data1['Temp (C)'])*1.8+32.0
 Wind1 = np.nanmax(data1['Wspd (m/s)'])*2.237
-rain1 = np.nanmax(data1['Rain (mm)'])*0.03937
+rain1 = np.nanmax(data1['Daily Total Rain (mm)'])*0.03937
 
 Tmax2 = np.nanmax(data2['Temp (C)'])*1.8+32.0
 Tmin2 = np.nanmin(data2['Temp (C)'])*1.8+32.0
 Wind2 = np.nanmax(data2['Wspd (m/s)'])*2.237
-rain2 = np.nanmax(data2['Rain (mm)'])*0.03937
+rain2 = np.nanmax(data2['Daily Total Rain (mm)'])*0.03937
 
 # Get the latest data
 T0 = data1['Temp (C)'].values[-1]*1.8+32.0
@@ -74,7 +68,7 @@ for line in fn_in:
             fn_out.write(newline)
 
     elif ("Insolation" in line):
-        newline = f"          <p>Temperature: {T0:.1f} °F<br>Rel. Humidity: {RH0:.0f}%<br>Wind Speed: {Wspd0:.1f} mph<br>Wind Direction: {Wdir0:.0f}°<br>Pressure: {P0:.1f} mb<br>Rainfall: {rain1:.2f} inches<br>Insolation: {sw0:.1f} W m<sup>-2</sup></p>\n"
+        newline = f"          <p>Temperature: {T0:.1f} °F<br>Rel. Humidity: {RH0:.0f}%<br>Wind Speed: {Wspd0:.1f} mph<br>Wind Direction: {Wdir0:.0f}°<br>Pressure: {P0:.1f} mb<br>Insolation: {sw0:.1f} W m<sup>-2</sup></p>\n"
         fn_out.write(newline)
 
     else:

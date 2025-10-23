@@ -6,7 +6,7 @@
 ##### START OPTIONS #####
 
 # Root directory containing data
-data_dir = '/archive/campus_mesonet_data/mesonet_data/met_tower/QCd_data'
+data_dir = '/archive/campus_mesonet_data/mesonet_data/met_tower/'
 
 # Directory to save the plots
 sdir = '/archive/campus_mesonet_data/images'
@@ -67,7 +67,7 @@ timezone = pytz.timezone('US/Central')
 date = datetime.now(timezone)
 
 # Read the data
-data = pandas.read_csv(f'{data_dir}/{date.year}/rapid_qc_ValpoMetTower_{date.strftime("%Y%m%d")}.csv')
+data = pandas.read_csv(f'{data_dir}/{date.year}/rapid_ValpoMetTower_{date.strftime("%Y%m%d")}.csv')
 
 # Check if day light savings time
 # Logic set this way beause the tower is naturally in DST
@@ -84,7 +84,7 @@ times = np.array([(date-dates[0]).total_seconds() for date in dates], dtype='flo
 itemp = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['Temp (C)'], left=np.nan, right=np.nan)
 irh = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['RH (%)'], left=np.nan, right=np.nan)
 ipres = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['Pres (mb)'], left=np.nan, right=np.nan)
-irain = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['Rain (mm)'], left=np.nan, right=np.nan)*0.03937 # mm -> inches
+irain = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['Daily Total Rain (mm)'], left=np.nan, right=np.nan)*0.03937 # mm -> inches
 iwspd = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['Wspd (m/s)'], left=np.nan, right=np.nan)
 iwdir = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['Wdir (deg)'], left=np.nan, right=np.nan)
 isw = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['SWdown (W/m2)'], left=np.nan, right=np.nan)
