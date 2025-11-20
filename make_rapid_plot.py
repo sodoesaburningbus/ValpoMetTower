@@ -153,7 +153,7 @@ axdir.set_yticks(np.arange(0,405,45))
 axdir.set_yticklabels(['N','NE','E','SE','S','SW','W','NW','N'])
 
 # Pressure
-axes[2].plot(wtimes, wpres, color='black', label="Pressure")
+axes[2].plot(wtimes, wpres, color='black', label="Pressure", zorder=10)
 axes[2].set_ylabel('Pressure (mb)', fontsize=fs, fontweight=fw)
 axes[2].set_ylim(np.floor(np.nanmin(wpres))-5, np.ceil(np.nanmax(wpres)+5))
 axes[2].plot([0,0],[-10,-10], color='steelblue', label='Rainfall') # Ghost line for legend
