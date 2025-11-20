@@ -29,7 +29,7 @@ date2 = date1-timedelta(days=1)
 # Read the data
 data1 = pandas.read_csv(f'{data_dir}/{date1.year}/rapid_ValpoMetTower_{date1.strftime("%Y%m%d")}.csv')
 
-data2 = pandas.read_csv(f'{data_dir}/QCd_data/{date2.year}/rapid_qc_ValpoMetTower_{date2.strftime("%Y%m%d")}.csv')
+data2 = pandas.read_csv(f'{data_dir}/{date2.year}/rapid_ValpoMetTower_{date2.strftime("%Y%m%d")}.csv')
 
 # Find the extremes
 Tmax1 = np.nanmax(data1['Temp (C)'])*1.8+32.0
@@ -68,7 +68,7 @@ for line in fn_in:
             fn_out.write(newline)
 
     elif ("Insolation" in line):
-        newline = f"          <p>Temperature: {T0:.1f} °F<br>Rel. Humidity: {RH0:.0f}%<br>Wind Speed: {Wspd0:.1f} mph<br>Wind Direction: {Wdir0:.0f}°<br>Pressure: {P0:.1f} mb<br>Insolation: {sw0:.1f} W m<sup>-2</sup></p>\n"
+        newline = f"          <p>Temperature: {T0:.1f} °F<br>Rel. Humidity: {RH0:.0f}%<br>Wind Speed: {Wspd0:.1f} mph<br>Wind Direction: {Wdir0:.0f}°<br>Pressure: {P0:.1f} mb<br>Insolation: {sw0:.1f} W m<sup>-2</sup><br><br>Last Updated<br>{date1.strftime('%b %d, %Y  %H:%M local')}</p>\n"
         fn_out.write(newline)
 
     else:

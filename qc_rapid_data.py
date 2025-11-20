@@ -25,7 +25,7 @@ nobs = 300
 # Number of standard deviations for the QC threshold
 # e.g. 3 means data more than 3 deviations from the mean over
 # the window will be thrown out
-nsigma = 4
+nsigma = 0.75
 
 #####  END OPTIONS  #####
 
@@ -51,7 +51,7 @@ times = np.array([(date-dates[0]).total_seconds() for date in dates], dtype='flo
 
 # Extract data from the data frame
 obs = {'temp': data_df['Temp (C)'].values, 'rh': data_df['RH (%)'].values, 'pres': data_df['Pres (mb)'].values,
-       'rain': data_df['Rain (mm)'].values, 'wspd': data_df['Wspd (m/s)'].values, 'wdir': data_df['Wdir (deg)'].values,
+       'rain': data_df['Daily Total Rain (mm)'].values, 'wspd': data_df['Wspd (m/s)'].values, 'wdir': data_df['Wdir (deg)'].values,
        'swdown': data_df['SWdown (W/m2)'].values}
 
 # Compute the standard deviation for each point and flag suspicious data
@@ -110,7 +110,7 @@ out_dict = OrderedDict([
     ('Temp (C)', obs['temp']), ('Temp QC', flags['temp']),
     ('RH (%)', obs['rh']), ('RH QC', flags['rh']),
     ('Pres (mb)', obs['pres']), ('Pres QC', flags['pres']),
-    ('Rain (mm)', obs['rain']), ('Rain QC', flags['rain']),
+    ('Daily Total Rain (mm)', obs['rain']), ('Rain QC', flags['rain']),
     ('Wspd (m/s)', obs['wspd']), ('Wspd QC', flags['wspd']),
     ('Wdir (deg)', obs['wdir']), ('Wdir QC', flags['wdir']),
     ('SWdown (W/m2)', obs['swdown']), ('SWdown QC', flags['swdown'])

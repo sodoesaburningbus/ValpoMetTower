@@ -14,6 +14,9 @@ sdir = '/archive/campus_mesonet_data/images'
 # Tower longitude
 lat0 = 41.46
 
+# Tower timezone (hours from UTC)
+tz = -6
+
 # Number of points to use in window averaging (each point is 1 second)
 npts = 120
 
@@ -72,13 +75,15 @@ data = pandas.read_csv(f'{data_dir}/{date.year}/rapid_ValpoMetTower_{date.strfti
 # Check if day light savings time
 # Logic set this way beause the tower is naturally in DST
 if (date > datetime(date.year, 3, 9, tzinfo=timezone)) and (date < datetime(date.year, 11, 2, tzinfo=timezone)):
-    dst_value = 0
+    dst_value = 1
 else:
-    dst_value = -1
+    dst_value = 0
 
 # Convert dates into times
-dates = [datetime.strptime(date, "%Y-%m-%d_%H:%M:%S") for date in data["Tower Date (local)"].values]
-times = np.array([(date-dates[0]).total_seconds() for date in dates], dtype='float')+(dates[0].hour*3600.0+dates[0].minute*60.0+dates[0].second)+dst_value*3600.0
+dates = [datetime.strptime(date, "%Y-%m-%d_%H:%M:%S") for date in data["Server Date (UTC)"].values]
+times = np.array([(date-dates[0]).total_seconds() for date in dates], dtype='float')+(dates[0].hour*3600.0+dates[0].minute*60.0+dates[0].second)+dst_value*3600.0+tz*3600.0
+#dates = [datetime.strptime(date, "%Y-%m-%d_%H:%M:%S") for date in data["Tower Date (local)"].values]
+#times = np.array([(date-dates[0]).total_seconds() for date in dates], dtype='float')+(dates[0].hour*3600.0+dates[0].minute*60.0+dates[0].second)+dst_value*3600.0
 
 # Extract the data from the dataframe and interpolate it to one secondly intervals
 itemp = np.interp(np.arange(0, 86400.0+1.0, 1), times, data['Temp (C)'], left=np.nan, right=np.nan)
@@ -114,7 +119,10 @@ axes[0].plot(wtimes, wtempF, color='firebrick', label='T')
 axes[0].plot(wtimes, wdewp, color='forestgreen', label='Td')
 axes[0].plot([0,0],[-100,-100], color='steelblue', label='RH') # Ghost line for RH
 
-axes[0].set_ylim(np.floor(np.nanmin(wdewp)*0.95), np.ceil(np.nanmax(wtempF)*1.05))
+try:
+    axes[0].set_ylim(np.floor(np.nanmin(wdewp)*0.95), np.ceil(np.nanmax(wtempF)*1.05))
+except:
+    pass
 axes[0].legend(shadow=True, fontsize=14)
 axes[0].set_ylabel('Temperature (°F)', fontsize=fs, fontweight=fw)
 

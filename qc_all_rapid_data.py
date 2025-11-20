@@ -26,7 +26,7 @@ nobs = 300
 # Number of standard deviations for the QC threshold
 # e.g. 3 means data more than 3 deviations from the mean over
 # the window will be thrown out
-nsigma = 4
+nsigma = 0.75
 
 #####  END OPTIONS  #####
 
@@ -115,7 +115,7 @@ for f in files:
         ('Temp (C)', obs['temp']), ('Temp QC', flags['temp']),
         ('RH (%)', obs['rh']), ('RH QC', flags['rh']),
         ('Pres (mb)', obs['pres']), ('Pres QC', flags['pres']),
-        ('Rain (mm)', obs['rain']), ('Rain QC', flags['rain']),
+        ('Daily Total Rain (mm)', obs['rain']), ('Rain QC', flags['rain']),
         ('Wspd (m/s)', obs['wspd']), ('Wspd QC', flags['wspd']),
         ('Wdir (deg)', obs['wdir']), ('Wdir QC', flags['wdir']),
         ('SWdown (W/m2)', obs['swdown']), ('SWdown QC', flags['swdown'])
